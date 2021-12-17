@@ -1,6 +1,7 @@
-use std::{sync::Arc, collections::HashMap};
+use std::sync::{Arc, Mutex};
 
-use async_graphql::{Object, Context, futures_util::lock::Mutex, Schema, EmptyMutation, EmptySubscription};
+use async_graphql::{Object, Context, Schema, EmptyMutation, EmptySubscription};
+
 
 pub type UsersSchema= Schema<QueryRoot, EmptyMutation, EmptySubscription>;
 
@@ -35,7 +36,7 @@ impl QueryRoot {
         ctx
             .data_unchecked::<Arc<Mutex<Vec<User>>>>()
             .lock()
-            .await
+            .unwrap()
             .iter()
             .cloned()
             .collect()
@@ -45,7 +46,7 @@ impl QueryRoot {
         ctx
             .data_unchecked::<Arc<Mutex<Vec<User>>>>()
             .lock()
-            .await
+            .unwrap()
             .iter()
             .cloned()
             .find(|x| x.id == id)
