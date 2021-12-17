@@ -565,6 +565,9 @@ dependencies = [
 [[package]]
 name = "models"
 version = "0.1.0"
+dependencies = [
+ "async-graphql",
+]
 
 [[package]]
 name = "multer"
