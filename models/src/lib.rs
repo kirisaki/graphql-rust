@@ -1,9 +1,9 @@
 use std::sync::{Arc, Mutex};
 
-use async_graphql::{Object, Context, Schema, EmptyMutation, EmptySubscription};
+use async_graphql::{Object, Context, Schema, EmptySubscription, Result};
 
 
-pub type UsersSchema= Schema<QueryRoot, EmptyMutation, EmptySubscription>;
+pub type UsersSchema= Schema<QueryRoot, MutationRoot, EmptySubscription>;
 
 #[derive(Clone)]
 pub struct User {
@@ -50,6 +50,22 @@ impl QueryRoot {
             .iter()
             .cloned()
             .find(|x| x.id == id)
+    }
+}
+
+pub struct MutationRoot;
+
+#[Object]
+impl MutationRoot {
+    async fn add_user(&self, ctx: &Context<'_>, id: String, name: String) -> Result<String> {
+        let id0 = id.clone();
+        let user = User{id, name, note: None};
+        let mut users = ctx
+            .data_unchecked::<Arc<Mutex<Vec<User>>>>()
+            .lock()
+            .unwrap();
+        users.push(user);
+        Ok(id0)
     }
 }
 

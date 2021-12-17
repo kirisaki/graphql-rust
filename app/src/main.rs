@@ -1,13 +1,13 @@
-use async_graphql::{Schema, EmptyMutation, EmptySubscription, http::{GraphQLPlaygroundConfig, playground_source},};
+use async_graphql::{Schema, EmptySubscription, http::{GraphQLPlaygroundConfig, playground_source},};
 use async_graphql_axum::{self, GraphQLRequest, GraphQLResponse};
 use axum::{response::{IntoResponse, self}, extract::Extension, Router, AddExtensionLayer, Server, routing::get};
-use models::{QueryRoot, UsersSchema, User};
+use models::{QueryRoot, MutationRoot, UsersSchema, User};
 use std::sync::{Arc, Mutex};
 
 
 #[tokio::main]
 async fn main() {
-    let schema = Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
+    let schema = Schema::build(QueryRoot, MutationRoot, EmptySubscription)
         .data(Arc::new(Mutex::new(Vec::<User>::new())))
         .finish();
 
